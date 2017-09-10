@@ -32,5 +32,27 @@ var ListingSchema = new Schema({
   city_en: String
 });
 
+ListingSchema.index(
+  {
+    address: 'text',
+    address_en: 'text',
+    district: 'text',
+    district_en: 'text',
+    description: 'text',
+    description_en: 'text'
+  },
+  {
+    weights: {
+      address: 10,
+      address_en: 10,
+      district: 5,
+      district_en: 5,  
+      description: 5,
+      description_en: 5          
+    },
+    name: "TextIndex"
+  }
+);
+
 mongoose.model('Listing', ListingSchema);
 
