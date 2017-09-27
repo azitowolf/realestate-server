@@ -8,10 +8,6 @@ module.exports = function (app) {
   app.use('/', router);
 };
 
-router.get('/', function (req, res, next){
-  res.sendFile(path.join(__dirname, '../../public', 'index.html'));
-})
-
 /*
    _____
 /     \
@@ -22,6 +18,12 @@ vvvvvvv  /|__/|
    |^ ^ ^ ^ |W|   |/^^\ |   /oo |  TEACH ME!
     \m___m__|_|    \m_m_|   \mm_|
 */
+
+
+// Front-End Application
+router.get('/', function (req, res, next){
+  res.sendFile(path.join(__dirname, '../../public', 'index.html'));
+})
 
 // Filters
 router.get('/api', function (req, res, next) {

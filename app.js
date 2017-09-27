@@ -5,7 +5,7 @@ var express = require('express'),
 
 // Setup  
 mongoose.connect(config.db);
-console.log("connecting to " + config.db)
+console.log("connecting to " + config.db);
 var db = mongoose.connection;
 
 
