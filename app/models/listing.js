@@ -1,15 +1,12 @@
 var mongoose = require('mongoose'),
+  AgentSchema = require('./agent'),
   Schema = mongoose.Schema;
 
 var ListingSchema = new Schema({
   id: Number,
   images: Array,
   rent: Number,
-  agent: {
-      name: String,
-      phone: String,
-      type: String
-  },
+  agent: {type: [AgentSchema]},
   address: String,
   district: String,
   city: String,
@@ -25,6 +22,7 @@ var ListingSchema = new Schema({
   compound: String,
   floor: String,
   buildingType: String,
+  isAvailable: Boolean,
   description_en: String,
   address_en: String,
   district_en: String,
@@ -54,5 +52,5 @@ ListingSchema.index(
   }
 );
 
-mongoose.model('Listing', ListingSchema);
+module.exports = mongoose.model('Listing', ListingSchema);
 

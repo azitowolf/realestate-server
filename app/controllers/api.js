@@ -2,7 +2,7 @@ var express = require('express'),
   router = express.Router(),
   mongoose = require('mongoose'),
   path = require('path'),
-  Listing = mongoose.model('Listing');
+  Listing = require('../models/listing');
 
 module.exports = function (app) {
   app.use('/', router);
@@ -20,25 +20,28 @@ vvvvvvv  /|__/|
 */
 
 
-// Front-End Application
-router.get('/', function (req, res, next){
+// Serve the Front-End Application in Production
+router.get('/', function (req, res, next) {
   res.sendFile(path.join(__dirname, '../../public', 'index.html'));
 })
 
-// Filters
+// Filters/ base API
 router.get('/api', function (req, res, next) {
 
   const limit = req.query.limit;
   var query = req.query;
 
   var mongoQuery = {};
-  query.beds === 'false' ? "" : mongoQuery.beds = query.beds;
-  query.baths === 'false' ? "" : mongoQuery.baths = query.baths;
-  query.district === 'false' ? "" : mongoQuery.district = query.district;
   mongoQuery.rent = {
     $lte: 99999999999,
     $gte: 0
   };
+
+  if (query.textSearch !== 'false') mongoQuery.$text = {$search: query.textSearch};
+  if (query.beds !== 'false') mongoQuery.beds = query.beds;
+  if (query.baths !== 'false') mongoQuery.baths = query.baths;
+  if (query.district !== 'false') mongoQuery.district = query.district;
+
   if (query.rentMax !== "false") {
     mongoQuery.rent.$lte = query.rentMax;
   }
@@ -46,7 +49,7 @@ router.get('/api', function (req, res, next) {
     mongoQuery.rent.$gte = query.rentMin;
   }
 
-  console.log(mongoQuery)
+  console.log(JSON.stringify(mongoQuery))
 
   Listing.find(mongoQuery,
     function (err, listings) {
@@ -66,13 +69,13 @@ router.get('/api/search', function (req, res, next) {
 
   Listing.find(
     {
-      $text: {$search: query.term}
-    },{
+      $text: { $search: query.term }
+    }, {
       score: { $meta: "textScore" }
     }, function (err, listings) {
       if (err) return next(err);
       res.send(listings);
-    }).sort({score:{$meta:"textScore"}})
+    }).sort({ score: { $meta: "textScore" } })
 });
 
 // Get ID
@@ -84,7 +87,49 @@ router.get('/api/listing/:id', function (req, res, next) {
   })
 });
 
+// Update availability for ID
+router.post('/api/update/:id', function (req, res, next) {
+
+  const id = mongoose.Types.ObjectId(req.params.id);
+  const payload = req.query.available; 
+
+  Listing.findById(id, function(err, doc) {
+    if (err) throw err;
+
+    doc.isAvailable = payload;
+  
+    // save the doc
+    doc.save(function(err) {
+      if (err) throw err;
+      console.log(doc);
+      console.log('listing successfully updated!');
+    });
+  
+  });  
+
+
+});
+
+// Create Listing
+router.post('/api/create', function (req, res, next) {
+
+  var fakeListing = new Listing({
+    id: 50000,
+    address: "fakeaddress"
+  })
+
+  fakeListing.save(function (err) {
+    if (err) throw err;
+
+    console.log('listing saved successfully!');
+  });
+
+
+});
+
+
+
 // Catch
 router.get('*', function (err, req, res, next) {
-  res.render('../views/error.jade', { message: "API ERROR", error: err })
+  res.send(err)
 });
