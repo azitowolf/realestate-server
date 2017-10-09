@@ -36,6 +36,7 @@ router.get('/api', function (req, res, next) {
     $lte: 99999999999,
     $gte: 0
   };
+  mongoQuery.isAvailable = true;
 
   if (query.textSearch !== 'false') mongoQuery.$text = {$search: query.textSearch};
   if (query.beds !== 'false') mongoQuery.beds = query.beds;
@@ -97,6 +98,7 @@ router.post('/api/update/:id', function (req, res, next) {
     if (err) throw err;
 
     doc.isAvailable = payload;
+    doc.availabilityLastUpdated = new Date().toDateString();
   
     // save the doc
     doc.save(function(err) {

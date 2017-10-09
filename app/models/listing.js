@@ -23,6 +23,7 @@ var ListingSchema = new Schema({
   floor: String,
   buildingType: String,
   isAvailable: Boolean,
+  availabilityLastUpdated: String,
   description_en: String,
   address_en: String,
   district_en: String,
