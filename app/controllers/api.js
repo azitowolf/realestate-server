@@ -1,8 +1,8 @@
-var express = require('express'),
-  router = express.Router(),
-  mongoose = require('mongoose'),
-  path = require('path'),
-  Listing = require('../models/listing');
+const express = require('express'),
+      router = express.Router(),
+      mongoose = require('mongoose'),
+      path = require('path'),
+      Listing = require('../models/listing');
 
 module.exports = function (app) {
   app.use('/', router);
