@@ -19,7 +19,7 @@
     "express": "^4.15.4",
     "glob": "^6.0.4",
     "method-override": "^2.3.9",
-    "mongoose": "^4.11.9",
+    "mongoose": "^4.13.21",
     "morgan": "^1.8.2"
   },
   "devDependencies": {
